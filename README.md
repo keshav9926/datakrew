@@ -42,7 +42,7 @@ Globs are expanded by the program itself, so the same command works on Windows.
 | `stress/README.md` | why those corruptions, the results table, conclusions |
 | `docs/part1_memo.md` | Part 1 memo: users, definition of correct, ranked failure modes, data |
 | `docs/vision_answers.md` | 2d vision answers (TODO) |
-| `DECISION_LOG.md` | choices made and what I'd change with more time (TODO) |
+| `DECISION_LOG.md` | choices made and what I would change with more time |
 
 ## Input
 
@@ -238,7 +238,12 @@ wrong claim (see `stress/README.md`).
 
 ## Memo, vision answers, decision log
 
-TODO: filled in as those parts are done.
+- [`docs/part1_memo.md`](docs/part1_memo.md): Part 1. The report is designed
+  for an insurer's claims adjuster; "correct" is the photo's set of
+  (part, damage type) pairs; failures are ranked by how bad × how often.
+- `docs/vision_answers.md`: 2d, in progress.
+- [`DECISION_LOG.md`](DECISION_LOG.md): eight choices and what I'd change with
+  more time.
 
 ## AI tools used
 
@@ -248,9 +253,13 @@ Claude Code (Anthropic) was used throughout:
 - writing the package, tests and scripts to the design choices below;
 - finding the photos on Wikimedia Commons;
 - placing the outlines from coordinate grids;
-- drafting the expected reports and the unclear-case notes.
+- drafting the expected reports and the unclear-case notes;
+- drafting the Part 1 memo and the decision log from the choices below.
 
 I made the design choices: polygons as the internal representation; the
 fraction-of-damage overlap rule and its 0.2 threshold; the confidence
 formula; the nearest-part fallback; Make Sense compatibility; storing two
-damages as masks; which corruptions to test; and the pair-level scoring.
+damages as masks; which corruptions to test; the pair-level scoring, with
+`unknown` counted as a miss; the claims adjuster as the memo's main user;
+ranking failures by how bad × how often; and leaving the fallback fix as a
+recommendation rather than code.
