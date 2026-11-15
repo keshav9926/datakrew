@@ -40,7 +40,8 @@ Globs are expanded by the program itself, so the same command works on Windows.
 | `stress/score.py` | the Part 1 definition of correct: (part, type) pair precision / recall / F1 |
 | `stress/run_all.py` | runs every corruption x strength x 10 seeds and prints the results table |
 | `stress/README.md` | why those corruptions, the results table, conclusions |
-| `docs/` | Part 1 memo, 2d vision answers (TODO) |
+| `docs/part1_memo.md` | Part 1 memo: users, definition of correct, ranked failure modes, data |
+| `docs/vision_answers.md` | 2d vision answers (TODO) |
 | `DECISION_LOG.md` | choices made and what I'd change with more time (TODO) |
 
 ## Input
