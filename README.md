@@ -36,7 +36,10 @@ Globs are expanded by the program itself, so the same command works on Windows.
 | `data/unclear_cases.md` | every doubt I had while annotating and how I decided |
 | `scripts/convert_annotations.py` | COCO / VGG export -> input json, with `--mask` to store a damage as RLE |
 | `scripts/preview.py` | draws annotations over the photos |
-| `stress/` | 2c: corruption script, scorer, results (TODO) |
+| `stress/corrupt.py` | the four corruptions (jitter, dropped parts, left/right swap, fragmentation) |
+| `stress/score.py` | the Part 1 definition of correct: (part, type) pair precision / recall / F1 |
+| `stress/run_all.py` | runs every corruption x strength x 10 seeds and prints the results table |
+| `stress/README.md` | why those corruptions, the results table, conclusions |
 | `docs/` | Part 1 memo, 2d vision answers (TODO) |
 | `DECISION_LOG.md` | choices made and what I'd change with more time (TODO) |
 
@@ -197,22 +200,55 @@ How it was made:
   `broken_lamp` or `broken_glass`? crease on the fender/hood seam?) is in
   `data/unclear_cases.md` with the decision and the reason.
 
-On the clean outlines the assigner matches all five expected reports exactly.
-The first run did not: two neighbouring part outlines (a wheel, a mirror)
-were drawn a little too big and took 21% of a damage each, just over the
-0.2 threshold. That is a useful reminder that part-outline quality matters
-as much as damage-outline quality; the stress test (2c) looks at this
-properly.
+On the clean outlines the assigner matches all five expected reports exactly,
+but it did not on the first run. In car02 and car04 it added a neighbouring
+part (rear wheel, mirror) that held 21% of a damage, just over the 0.2
+threshold. Zoomed overlays showed these were outline errors, not assigner
+errors:
 
-## Stress test, memo, vision answers, decision log
+- the rear-wheel outline ran past the wheel-arch lip onto the door;
+- the d3 scratch outline ran past the visible end of the scratch;
+- the broken-window outline, and the window part, reached down over the mirror.
+
+Those outlines were corrected and the expected reports were left unchanged.
+Fixing ground truth after seeing the output is a leak risk, so the change is
+recorded here and in `data/unclear_cases.md`. It also shows that part-outline
+quality matters as much as damage-outline quality, which the stress test
+confirms.
+
+## Stress test (2c)
+
+Details, the results table and conclusions are in [`stress/README.md`](stress/README.md).
+Four corruptions, each at three strengths, 10 seeds each, scored with
+(part, type) pair F1:
+
+| corruption | F1 at mildest / middle / strongest |
+|---|---|
+| boundary jitter (5 / 15 / 30 px) | 1.00 / 1.00 / 0.96 |
+| dropped part outlines (p = 0.1 / 0.3 / 0.5) | 0.92 / 0.70 / 0.52 |
+| left/right swapped in part names (p = 0.1 / 0.3 / 0.5) | 0.93 / 0.80 / 0.68 |
+| damage split into pieces (2 / 3 / 4) | 1.00 / 1.00 / 1.00 |
+
+Missing parts hurt most, and 79% of the resulting wrong answers come from the
+nearest-part fallback guessing a neighbour. The first thing to fix in the
+assigner is to let the fallback pick only parts that can carry that damage
+type, and answer `unknown` otherwise.
+
+## Memo, vision answers, decision log
 
 TODO: filled in as those parts are done.
 
 ## AI tools used
 
-Claude Code (Anthropic) was used throughout: planning the work, writing the
-package, tests and scripts, searching Wikimedia Commons for photos, drafting
-the outlines from coordinate grids, and drafting the first version of the
-notes. I made the design decisions, reviewed every overlay and expected
-report, and the decisions in `data/unclear_cases.md` and `DECISION_LOG.md`
-are mine.
+Claude Code (Anthropic) was used throughout:
+
+- planning the work;
+- writing the package, tests and scripts to the design choices below;
+- finding the photos on Wikimedia Commons;
+- placing the outlines from coordinate grids;
+- drafting the expected reports and the unclear-case notes.
+
+I made the design choices: polygons as the internal representation; the
+fraction-of-damage overlap rule and its 0.2 threshold; the confidence
+formula; the nearest-part fallback; Make Sense compatibility; storing two
+damages as masks; which corruptions to test; and the pair-level scoring.
