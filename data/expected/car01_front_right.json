@@ -1,0 +1,10 @@
+{
+  "image_id": "car01_front_right",
+  "summary": [
+    {"part": "front_bumper", "type": "crack"},
+    {"part": "front_bumper", "type": "dent"},
+    {"part": "front_right_fender", "type": "dent"},
+    {"part": "front_right_light", "type": "broken_lamp"}
+  ],
+  "notes": "Low-speed front-right impact. Bumper skin creased over ~40 cm with a tear below the 'OH DEER' note; fender edge pushed out of line; headlight assembly knocked out of its mounts (lens itself intact). Tape hides more bumper damage near the wheel arch, not outlined."
+}

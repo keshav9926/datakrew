@@ -1,0 +1,8 @@
+{
+  "image_id": "car04_front",
+  "summary": [
+    {"part": "front_left_window", "type": "broken_glass"},
+    {"part": "windshield", "type": "broken_glass"}
+  ],
+  "notes": "Vandalism. Windscreen crazed over its whole area, driver's door window (car's left) completely gone with glass on the ground. Body panels, lights and bumper look undamaged; glass fragments on the hood are debris, not damage."
+}

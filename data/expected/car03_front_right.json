@@ -1,0 +1,9 @@
+{
+  "image_id": "car03_front_right",
+  "summary": [
+    {"part": "front_bumper", "type": "crack"},
+    {"part": "front_right_fender", "type": "dent"},
+    {"part": "front_right_light", "type": "broken_lamp"}
+  ],
+  "notes": "Front-right corner impact. Headlight lens shattered and full of dirt; fender edge next to the lamp creased; bumper cover torn open and hanging, a section is missing. Hood corner may be slightly lifted but shows no crease, so not listed."
+}

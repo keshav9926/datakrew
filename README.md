@@ -28,7 +28,14 @@ Globs are expanded by the program itself, so the same command works on Windows.
 | `assigner/__main__.py` | CLI |
 | `tests/test_hard_cases.py` | hand-made tests for the three most important hard cases |
 | `examples/` | the assignment's example photo (one polygon damage, one mask damage) |
-| `data/` | 2b: photos, annotations, expected reports, unclear cases (TODO) |
+| `data/photos/` | the 5 photos + sources and licences |
+| `data/raw/labels_coco.json` | my outlines, COCO polygon format |
+| `data/annotations/` | the outlines converted to the assignment's input format (two damages as RLE masks) |
+| `data/expected/` | the report a human expert would give for each photo |
+| `data/preview/` | outlines drawn over each photo, for checking |
+| `data/unclear_cases.md` | every doubt I had while annotating and how I decided |
+| `scripts/convert_annotations.py` | COCO / VGG export -> input json, with `--mask` to store a damage as RLE |
+| `scripts/preview.py` | draws annotations over the photos |
 | `stress/` | 2c: corruption script, scorer, results (TODO) |
 | `docs/` | Part 1 memo, 2d vision answers (TODO) |
 | `DECISION_LOG.md` | choices made and what I'd change with more time (TODO) |
@@ -159,12 +166,53 @@ broken_lamp, dent, scratch, crack`.
 Plus a cheap RLE round-trip test, because a wrong decoder would silently
 shift every mask.
 
-## Dataset, stress test, memo, vision answers, decision log
+## Dataset (2b)
+
+Five Wikimedia Commons photos (sources and licences in `data/photos/README.md`),
+chosen so that all six damage types and four viewpoints appear, and so that at
+least one damage crosses a part seam (the key scratch in car02).
+
+| Photo | Damages | Parts outlined |
+|---|---|---|
+| car01_front_right | bumper dent, bumper crack, fender dent, headlight knocked loose | bumper, right light, right fender, hood, grille, wheel |
+| car02_left_side | three key scratches, one crossing the door seam | both left doors, both windows, mirror, quarter panel, wheel |
+| car03_front_right | shattered headlight, creased fender (mask), bumper torn open | right light, hood, right fender, bumper, wheel |
+| car04_front | windscreen smashed (mask), driver's window gone | windshield, hood, roof, left window, mirror, both lights, grille, bumper |
+| car05_right_side | flat front-right tyre | wheel, fender, bumper, light, door |
+
+How it was made:
+
+- Outlines are polygons placed by reading pixel coordinates off a 50 px grid
+  over each photo, stored in `data/raw/labels_coco.json`, and checked visually
+  on `data/preview/*.png`. They are accurate to roughly 10 px.
+- `scripts/convert_annotations.py` turns them into the input format. It
+  accepts Make Sense's COCO or VGG exports too, so anyone can redo the outlines
+  in a GUI. `--mask image_id:dN` stores a damage as a 160x160 RLE mask;
+  car03 d2 and car04 d1 are stored that way.
+- Only parts that touch a damage or sit next to it are outlined, plus a few
+  neighbours as distractors, because a real part model would output them.
+- Expected reports (`data/expected/`) were written by looking at the photo,
+  before running the assigner.
+- Every doubt (lamp knocked loose: is that `broken_lamp`? shattered lens:
+  `broken_lamp` or `broken_glass`? crease on the fender/hood seam?) is in
+  `data/unclear_cases.md` with the decision and the reason.
+
+On the clean outlines the assigner matches all five expected reports exactly.
+The first run did not: two neighbouring part outlines (a wheel, a mirror)
+were drawn a little too big and took 21% of a damage each, just over the
+0.2 threshold. That is a useful reminder that part-outline quality matters
+as much as damage-outline quality; the stress test (2c) looks at this
+properly.
+
+## Stress test, memo, vision answers, decision log
 
 TODO: filled in as those parts are done.
 
 ## AI tools used
 
-Claude Code (Anthropic) was used for planning the work, scaffolding the
-package and tests, and reviewing the logic. Photo selection, annotation,
-the expected reports and the decisions in the decision log are my own.
+Claude Code (Anthropic) was used throughout: planning the work, writing the
+package, tests and scripts, searching Wikimedia Commons for photos, drafting
+the outlines from coordinate grids, and drafting the first version of the
+notes. I made the design decisions, reviewed every overlay and expected
+report, and the decisions in `data/unclear_cases.md` and `DECISION_LOG.md`
+are mine.
