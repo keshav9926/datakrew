@@ -225,14 +225,15 @@ Four corruptions, each at three strengths, 10 seeds each, scored with
 | corruption | F1 at mildest / middle / strongest |
 |---|---|
 | boundary jitter (5 / 15 / 30 px) | 1.00 / 1.00 / 0.96 |
-| dropped part outlines (p = 0.1 / 0.3 / 0.5) | 0.92 / 0.70 / 0.52 |
+| dropped part outlines (p = 0.1 / 0.3 / 0.5) | 0.92 / 0.71 / 0.57 |
 | left/right swapped in part names (p = 0.1 / 0.3 / 0.5) | 0.93 / 0.80 / 0.68 |
 | damage split into pieces (2 / 3 / 4) | 1.00 / 1.00 / 1.00 |
 
-Missing parts hurt most, and 79% of the resulting wrong answers come from the
+Missing parts hurt most, and every wrong part claim they caused came from the
 nearest-part fallback guessing a neighbour. The first thing to fix in the
 assigner is to let the fallback pick only parts that can carry that damage
-type, and answer `unknown` otherwise.
+type, and answer `unknown` otherwise. An `unknown` counts as a miss, not as a
+wrong claim (see `stress/README.md`).
 
 ## Memo, vision answers, decision log
 

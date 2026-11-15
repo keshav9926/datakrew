@@ -1,5 +1,7 @@
 """Score reports against expected reports with the Part 1 definition of
-correct: a report is its set of (part, damage type) pairs.
+correct: a report is its set of (part, damage type) pairs. "unknown" is not a
+part, so it is never a wrong claim, but the pair it should have found still
+counts as missed.
 
     python stress/score.py report.json "data/expected/*.json"
 """
@@ -9,7 +11,7 @@ import sys
 
 
 def pairs(report):
-    return {(s["part"], s["type"]) for s in report["summary"]}
+    return {(s["part"], s["type"]) for s in report["summary"] if s["part"] != "unknown"}
 
 
 def score(reports, expected):

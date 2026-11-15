@@ -27,16 +27,22 @@ shows a blind spot in the scoring rule (see below).
 ## Scoring
 
 A report is its set of (part, damage type) pairs. A predicted pair is right
-only if both the part name and the damage type match an expected pair;
-`unknown` never matches. Precision, recall and F1 are pooled over all
-12 expected pairs from the 5 photos. "Exactly right" is the share of photos
-whose pair set matches the expected one exactly. Each row is the mean over
-10 random seeds.
+only if both the part name and the damage type match an expected pair.
+`unknown` is not a part: it never counts as a wrong claim, but the expected
+pair it should have found still counts as missed. So an honest "I don't know"
+costs recall only, while a wrong guess costs precision and recall.
+Precision, recall and F1 are pooled over all 12 expected pairs from the
+5 photos. "Exactly right" is the share of photos with nothing missed and no
+wrong part claimed. Each row is the mean over 10 random seeds.
 
-The last column is a diagnostic, not part of the score. It counts the wrong
-damage-to-part assignments that came from the nearest-part fallback, i.e.
-cases where no part held 20% of the damage, so the assigner guessed the
-closest part.
+The first run also counted `unknown` as a wrong claim. That scored an honest
+"I don't know" the same as a confident wrong guess, so it was changed. Only
+the `drop_parts` rows moved: F1 at p = 0.3 / 0.5 went from 0.70 / 0.52 to
+0.71 / 0.57.
+
+The last column is a diagnostic, not part of the score. It is the share of
+wrong part claims that came from the nearest-part fallback, i.e. cases where
+no part held 20% of the damage, so the assigner guessed the closest part.
 
 ## Results
 
@@ -47,8 +53,8 @@ closest part.
 | jitter | 15 px | 1.00 | 0.99 | 1.00 | 98% | - |
 | jitter | 30 px | 0.95 | 0.97 | 0.96 | 80% | 0% |
 | drop_parts | 0.1 p | 0.94 | 0.91 | 0.92 | 78% | 100% |
-| drop_parts | 0.3 p | 0.71 | 0.68 | 0.70 | 46% | 79% |
-| drop_parts | 0.5 p | 0.54 | 0.51 | 0.52 | 30% | 62% |
+| drop_parts | 0.3 p | 0.75 | 0.68 | 0.71 | 46% | 100% |
+| drop_parts | 0.5 p | 0.65 | 0.51 | 0.57 | 30% | 100% |
 | swap_lr | 0.1 p | 0.93 | 0.93 | 0.93 | 82% | 0% |
 | swap_lr | 0.3 p | 0.80 | 0.80 | 0.80 | 52% | 0% |
 | swap_lr | 0.5 p | 0.68 | 0.68 | 0.68 | 32% | 0% |
@@ -59,10 +65,10 @@ closest part.
 ## Conclusions
 
 Missing part outlines hurt the report most. At a 30% drop rate F1 falls to
-0.70 and fewer than half the photos come out exactly right. About four in
-five of those wrong answers come from the nearest-part fallback guessing a
-neighbour (a broken lamp reported on the bumper, a dent on the wheel), so an
-upstream miss turns into a plausible-looking wrong answer instead of an honest
+0.71 and fewer than half the photos come out exactly right. Every wrong part
+claim in those runs came from the nearest-part fallback guessing a neighbour
+(a broken lamp reported on the bumper, a dent on the wheel), so an upstream
+miss turns into a plausible-looking wrong answer instead of an honest
 `unknown`.
 
 Left/right swaps come next, and the assigner cannot see them at all because it

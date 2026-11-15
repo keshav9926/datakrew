@@ -35,7 +35,7 @@ def run(photos):
         right = pairs(expected[image_id])
         for d in r["damages"]:
             for h in d["parts"]:
-                if (h["name"], d["type"]) not in right:
+                if h["name"] != "unknown" and (h["name"], d["type"]) not in right:
                     m["wrong"] += 1
                     m["guessed"] += "nearest_part_fallback" in d["flags"]
     return m
