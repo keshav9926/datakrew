@@ -28,6 +28,20 @@ One bullet per doubt: what was unclear, what I decided, why.
 - **car04**: glass fragments on the hood (debris, not damage). Body parts not touching a damage (bumper, grille, lights) were still outlined as context, because a real part model would output them and the assigner must not be confused by them.
 - **car02**: the rear quarter panel and the wheel are outlined as neighbours only; they carry no damage.
 
+## Outlines corrected after the first assigner run
+
+The expected reports were written before the first run and were not changed.
+On the first run, two photos picked up an extra part at 21% overlap. Each
+overlay was zoomed in on and only outlines that were visibly wrong were fixed:
+
+- **car02 p7 rear_left_wheel**: ran ~35 px past the white wheel-arch lip onto the door. Redrawn to follow the lip.
+- **car02 d3 scratch**: started on the arch lip, ~50 px before the scratch is actually visible. Start moved to where the line begins.
+- **car04 d2 broken_glass and p4 front_left_window**: reached ~20 px down over the mirror housing. Bottom edge moved up to the window sill.
+
+Risk: changing ground truth after seeing the output can quietly tune the data
+to the code. That is why the expected reports stayed fixed and the
+before/after is listed here.
+
 ## Outline precision
 
 - Outlines were placed by reading pixel coordinates off a 50 px grid over each photo and checked on `data/preview/*.png`. They are good to roughly 10 px, which is coarser than a careful click-by-click tracing but finer than a 160x160 mask cell (6 x 4 px here). Two blob-shaped damages (car03 d2, car04 d1) are stored as RLE masks to exercise that code path on real photos.
