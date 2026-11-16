@@ -41,7 +41,7 @@ Globs are expanded by the program itself, so the same command works on Windows.
 | `stress/run_all.py` | runs every corruption x strength x 10 seeds and prints the results table |
 | `stress/README.md` | why those corruptions, the results table, conclusions |
 | `docs/part1_memo.md` | Part 1 memo: users, definition of correct, ranked failure modes, data |
-| `docs/vision_answers.md` | 2d vision answers (TODO) |
+| `docs/vision_answers.md` | 2d vision answers |
 | `DECISION_LOG.md` | choices made and what I would change with more time |
 
 ## Input
@@ -241,7 +241,8 @@ wrong claim (see `stress/README.md`).
 - [`docs/part1_memo.md`](docs/part1_memo.md): Part 1. The report is designed
   for an insurer's claims adjuster; "correct" is the photo's set of
   (part, damage type) pairs; failures are ranked by how bad × how often.
-- `docs/vision_answers.md`: 2d, in progress.
+- [`docs/vision_answers.md`](docs/vision_answers.md): 2d, the four vision
+  questions, each under 150 words.
 - [`DECISION_LOG.md`](DECISION_LOG.md): eight choices and what I'd change with
   more time.
 
@@ -254,7 +255,8 @@ Claude Code (Anthropic) was used throughout:
 - finding the photos on Wikimedia Commons;
 - placing the outlines from coordinate grids;
 - drafting the expected reports and the unclear-case notes;
-- drafting the Part 1 memo and the decision log from the choices below.
+- drafting the Part 1 memo and the decision log from the choices below;
+- drafting the 2d vision answers.
 
 I made the design choices: polygons as the internal representation; the
 fraction-of-damage overlap rule and its 0.2 threshold; the confidence
