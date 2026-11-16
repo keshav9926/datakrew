@@ -250,12 +250,10 @@ wrong claim (see `stress/README.md`).
 
 Claude Code (Anthropic) was used throughout:
 
-- planning the work;
 - writing the package, tests and scripts to the design choices below;
-- finding the photos on Wikimedia Commons;
 - placing the outlines from coordinate grids;
 - drafting the expected reports and the unclear-case notes;
-- drafting the Part 1 memo and the decision log from the choices below;
+- drafting the Part 1 memo;
 - drafting the 2d vision answers.
 
 I made the design choices: polygons as the internal representation; the
